@@ -6,7 +6,7 @@ import { useApiClient } from "@/hooks/useApiClient";
 import { getAllPosts } from "@/services/postsService";
 import { useAuth } from "../../context/AuthContext";
 
-import { Link } from "expo-router";
+import { Href, Link } from "expo-router";
 
 export default function HomeScreen() {
   const { user, logout } = useAuth();
@@ -63,6 +63,14 @@ export default function HomeScreen() {
           <Text style={styles.profileButtonText}>Perfil</Text>
         </Pressable>
       </Link>
+
+      {user?.role === "PROFESSOR" ? (
+        <Link href={"/teacher" as Href} asChild>
+          <Pressable style={styles.profileButton}>
+            <Text style={styles.profileButtonText}>Painel do professor</Text>
+          </Pressable>
+        </Link>
+      ) : null}
 
       <Pressable
         onPress={handleLogout}

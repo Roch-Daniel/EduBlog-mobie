@@ -274,6 +274,39 @@ Se uma verificação identificar uma incompatibilidade, analise a mensagem antes
 
 ---
 
+## Consulta e leitura de conteúdos
+
+A página inicial reúne listagem, cards, pesquisa, navegação por disciplinas e
+filtros de autor, série/ano e semestre. Os posts marcados com `isFeatured` aparecem
+em um carrossel. Ao abrir um card, a tela de leitura apresenta título, autor,
+disciplina, classificação, semestre, série/ano, data e conteúdo completo.
+
+Esse módulo fica em `src/features/posts`, com as rotas em `src/app/(app)` e as
+consultas em `src/services/postsService.ts`. A regra de login existente foi mantida.
+
+- `GET /posts`: catálogo de conteúdos e opções dos filtros;
+- `GET /posts/search?q=...&discipline=...&author=...`: pesquisa e filtros na API;
+- `GET /posts/:id`: leitura de uma publicação;
+- `GET /catalog/disciplines`: navegação por disciplinas, inclusive sem publicações.
+
+Série/ano e semestre são filtrados no aplicativo. As telas de consulta e leitura
+exibem apenas posts com `status.label` igual a `Publicado`, incluindo os destaques.
+A classificação exibida corresponde a `status.label`, o campo disponível no
+contrato atual. Comentários não foram adicionados, pois são opcionais e não há
+uma implementação existente.
+
+A API configurada em `EXPO_PUBLIC_API_URL` deve oferecer os endpoints acima. A
+API de produção indicada neste README oferece `/posts/search`. Versões anteriores
+do backend podem não definir essa rota; confirme sua disponibilidade ao usar uma
+API local. O termo pesquisado segue o comportamento de acentuação da API.
+
+Para verificar o módulo, sem adicionar dependências de testes:
+
+```bash
+node --experimental-strip-types --test scripts/test-posts.mjs
+npx tsc --noEmit
+```
+
 ## Scripts disponíveis
 
 | Comando                | Descrição                                            |

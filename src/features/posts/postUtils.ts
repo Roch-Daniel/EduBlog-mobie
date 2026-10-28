@@ -1,0 +1,58 @@
+import type { IPost } from "@/interfaces/IPost";
+
+export interface PostFilters {
+  discipline: string;
+  author: string;
+  series: string;
+  semester: string;
+}
+
+export const emptyPostFilters: PostFilters = {
+  discipline: "",
+  author: "",
+  series: "",
+  semester: "",
+};
+
+export function isPublishedPost(post: IPost): boolean {
+  // The public endpoints also return drafts/archived posts in the current API.
+  return post.status?.label?.trim().toLocaleLowerCase("pt-BR") === "publicado";
+}
+
+export function filterPosts(posts: IPost[], filters: PostFilters): IPost[] {
+  // Reapply catalog filters: the API's in-memory search ignores these fields.
+  return posts.filter(
+    (post) =>
+      isPublishedPost(post) &&
+      (!filters.discipline || post.discipline?.label === filters.discipline) &&
+      (!filters.author || post.author?.name === filters.author) &&
+      (!filters.series || post.series === filters.series) &&
+      (!filters.semester || post.semester === filters.semester),
+  );
+}
+
+export function sortPosts(posts: IPost[]): IPost[] {
+  return [...posts].sort(
+    (a, b) => Date.parse(b.createDate) - Date.parse(a.createDate),
+  );
+}
+
+export function getFilterOptions(
+  values: (string | null | undefined)[],
+): string[] {
+  return [
+    ...new Set(values.filter((value): value is string => !!value?.trim())),
+  ].sort((a, b) => a.localeCompare(b, "pt-BR", { numeric: true }));
+}
+
+export function formatPostDate(value: string): string {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? "Data não informada"
+    : date.toLocaleDateString("pt-BR");
+}
+
+export function formatSemester(value?: string | null): string {
+  if (!value?.trim()) return "Não informado";
+  return /^\d+$/.test(value) ? `${value}º semestre` : value;
+}

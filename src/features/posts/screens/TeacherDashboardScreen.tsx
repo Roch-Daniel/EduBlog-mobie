@@ -115,7 +115,13 @@ export default function TeacherDashboardScreen() {
                 {
                   text: "Sair",
                   style: "destructive",
-                  onPress: () => void logout(),
+                  onPress: () =>
+                    void logout().catch(() => {
+                      Alert.alert(
+                        "Erro ao sair",
+                        "Não foi possível encerrar sua sessão. Tente novamente.",
+                      );
+                    }),
                 },
               ])
             }
